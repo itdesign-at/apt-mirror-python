@@ -361,15 +361,15 @@ class AptMirror(object):
                 rel_path = remove_double_slashes(data['Filename'])
                 store_path = os.path.join(base_path, rel_path)
                 self.config.skipclean[store_path] = 1
-                self.list_files['all'].write(store_path + '\n')
+                self.list_files['all'].write(bytes(store_path, 'utf8') + b'\n')
 
                 for key in ['MD5sum', 'SHA1', 'SHA256']:
                     if key in data:
                         self.list_files[key].write(
-                            data[key] + '  ' + store_path + '\n')
+                            bytes(data[key], 'utf8') + b'  ' + bytes(store_path, 'utf8') + b'\n')
                 if self.need_update(os.path.join(mirror, rel_path), int(data["Size"])):
                     download_uri = os.path.join(uri, rel_path)
-                    self.list_files['new'].write(download_uri + "\n")
+                    self.list_files['new'].write(bytes(download_uri, 'utf8') + b"\n")
                     self.add_url_to_download(
                         uri,
                         rel_path,
@@ -389,12 +389,12 @@ class AptMirror(object):
                         data["Directory"] + "/" + fn)
                     store_path = os.path.join(base_path, rel_path)
                     self.config.skipclean[store_path] = 1
-                    self.list_files['all'].write(store_path + "\n")
+                    self.list_files['all'].write(bytes(store_path, 'utf8') + b"\n")
                     self.list_files['MD5sum'].write(
-                        md5sum + "  " + store_path + "\n")
+                        bytes(md5sum, 'utf8') + b"  " + bytes(store_path, 'utf8') + b"\n")
                     if self.need_update(os.path.join(mirror, rel_path), int(size)):
                         download_uri = os.path.join(uri, rel_path)
-                        self.list_files['new'].write(download_uri + "\n")
+                        self.list_files['new'].write(bytes(download_uri, 'utf8') + b"\n")
                         self.add_url_to_download(
                             uri,
                             rel_path, int(size))
@@ -505,7 +505,7 @@ class AptMirror(object):
         for fp in self.list_files.values():
             fp.close()
 
-        need_bytes = sum(self.urls_to_download.itervalues())
+        need_bytes = sum(self.urls_to_download.values())
 
         size_output = format_bytes(need_bytes)
 
