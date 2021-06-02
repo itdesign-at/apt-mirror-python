@@ -57,7 +57,7 @@ def rsync_batch_downloader(args, listfile, logfile):
 def download_urls(stage, urls, context):
     nthreads = min(context.nthreads, len(urls))
 
-    wget_args = ['wget', '--no-cache',
+    wget_args = ['wget', '--no-cache', 
                  '--limit-rate=' + context.limit_rate,
                  '-t', '5', '-r', '-N', '-l', 'inf']
     rsync_args = ['rsync', '-t', '--no-motd',
@@ -70,6 +70,10 @@ def download_urls(stage, urls, context):
         wget_args.append("--auth-no-challenge")
     if context.no_check_certificate == 1:
         wget_args.append("--no-check-certificate")
+    # ToDo: add config param for artifactory
+    if stage == "archive" and context.skip_package_download and \
+      (context.skip_package_download == 'yes' or context.skip_package_download == 'on'):
+        wget_args.append("--spider")
     if context.unlink == 1:
         wget_args.append("--unlink")
     else:
