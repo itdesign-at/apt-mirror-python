@@ -8,6 +8,7 @@ import re
 import time
 import logging
 import threading
+from math import ceil
 try:
     import queue
 except ImportError:
@@ -144,7 +145,7 @@ def download_urls(stage, urls, context):
         i = 0
         while wget_urls:
             # splice
-            amount = len(wget_urls) / nthreads
+            amount = int(ceil( len(wget_urls) / nthreads ))
             part = wget_urls[:amount]
             wget_urls = wget_urls[amount:]
             with open(os.path.join(context.var_path,
